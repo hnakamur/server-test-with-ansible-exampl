@@ -1,10 +1,10 @@
 ---
-- name: Warn check mode is needed for testing
-  debug: msg="!!! テスト用のプレイブック実行には -C をつけてチェックモードで実行してください!!!"
+# NOTE: 間違って-CをつけずにAnsibleを実行した時に-Cが必要な旨を表示して異常終了する。
+- name: Make sure that ansible_check_mode is True
+  assert:
+    that: ansible_check_mode
+    msg: "!!! テスト用のプレイブック実行には -C をつけてチェックモードで実行してください!!!"
   run_once: true
-  # NOTE: 間違って-CをつけずにAnsibleを実行した時に-Cが必要な旨を表示して異常終了する。
-  failed_when: not ansible_check_mode
-  when: not ansible_check_mode
   # NOTE: タグを指定して一部のチェックだけ行う場合でもこのタスクが実行されるようalwaysのタグを指定しています。
   # --skip-tags alwaysと指定された場合は実行されなくなってしまうので、そのような指定はしない運用とします。
   # http://docs.ansible.com/ansible/playbooks_tags.html#special-tags
