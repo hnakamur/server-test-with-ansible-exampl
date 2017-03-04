@@ -1,0 +1,12 @@
+---
+test_nginx_version_list:
+  centos7: nginx-1.11.9-7.el7.centos.ngx.x86_64
+test_nginx_version: "{{ test_nginx_version_list[ansible_hostname] }}"
+
+test_nginx_service_started_list:
+  centos7: True
+test_nginx_service_state: "{% if test_nginx_service_started_list[ansible_hostname] %}active{% else %}unknown{% endif %}"
+
+test_nginx_service_enabled_list:
+  centos7: True
+test_nginx_service_enabled: "{% if test_nginx_service_enabled_list[ansible_hostname] %}enabled{% else %}disabled{% endif %}"

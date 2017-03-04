@@ -1,0 +1,5 @@
+[containers]
+centos7
+
+[containers:vars]
+ansible_connection = lxd

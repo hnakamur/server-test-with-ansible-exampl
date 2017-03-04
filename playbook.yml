@@ -1,0 +1,7 @@
+---
+- hosts: containers
+  roles:
+    # NOTE: 最初に-Cをつけて実行したかチェックし、つけていない場合は警告表示して異常終了する。
+    - role: warn_check_mode_needed_for_test
+
+    - role: test-nginx

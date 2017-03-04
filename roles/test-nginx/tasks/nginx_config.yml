@@ -1,0 +1,30 @@
+---
+# NOTE: WANT= はAnsibleの実行結果を見るだけで期待する結果と実際の結果を比較できるように入れています。
+- name: Check nginx version
+  shell: WANT={{ test_nginx_version }}; /usr/bin/rpm -qa nginx
+  register: test_nginx_version_result
+  changed_when: "{{ test_nginx_version_result.stdout != test_nginx_version }}"
+  notify: show_test_failed_message
+  check_mode: no
+  args:
+    warn: no
+
+- name: Check nginx service is active
+  shell: WANT={{ test_nginx_service_state }}; /usr/bin/systemctl is-active nginx
+  register: test_nginx_service_state_result
+  changed_when: "{{ test_nginx_service_state_result.stdout != test_nginx_service_state }}"
+  notify: show_test_failed_message
+  failed_when: test_nginx_service_state_result.stdout not in ['active', 'unknown']
+  check_mode: no
+  args:
+    warn: no
+
+- name: Check nginx service is enabled
+  shell: WANT={{ test_nginx_service_enabled }}; /usr/bin/systemctl is-enabled nginx
+  register: test_nginx_service_enabled_result
+  changed_when: "{{ test_nginx_service_enabled_result.stdout != test_nginx_service_enabled }}"
+  notify: show_test_failed_message
+  failed_when: test_nginx_service_enabled_result.stdout not in ['enabled', 'disabled']
+  check_mode: no
+  args:
+    warn: no

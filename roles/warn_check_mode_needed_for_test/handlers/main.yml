@@ -1,0 +1,5 @@
+---
+- name: show_test_failed_message
+  debug: msg="!!! サービスの状態確認で期待する結果と違う結果が得られました。changedになった結果を確認してください !!!"
+  # NOTE: 上記のメッセージを赤字で表示し、実行結果のfailedをカウントアップさせるため、failed_whenをTrueにしています。
+  failed_when: True

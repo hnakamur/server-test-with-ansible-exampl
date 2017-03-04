@@ -1,0 +1,5 @@
+---
+- include: nginx_config.yml
+  tags:
+    - nginx
+    - nginx_config
