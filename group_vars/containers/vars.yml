@@ -1,6 +1,8 @@
 ---
 test_nginx_version_list:
+  centos6: nginx-1.11.9-1.el7.ngx.x86_64
   centos7: nginx-1.11.10-1.el7.ngx.x86_64
+#  centos7: nginx-1.11.10-1.el7.ngx.x86_64
 test_nginx_version: "{{ test_nginx_version_list[ansible_hostname] }}"
 
 test_nginx_service_started_list:

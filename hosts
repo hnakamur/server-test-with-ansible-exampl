@@ -1,4 +1,5 @@
 [containers]
+centos6
 centos7
 
 [containers:vars]
