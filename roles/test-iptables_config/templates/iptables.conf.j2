@@ -1,13 +1,29 @@
+*mangle
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+COMMIT
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+COMMIT
 *filter
 :INPUT DROP [0:0]
 :FORWARD ACCEPT [0:0]
 :OUTPUT ACCEPT [0:0]
 -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A INPUT -p tcp -m tcp --tcp-flags ALL NONE -j DROP
--A INPUT -p tcp -m tcp ! --syn -m state --state NEW -j DROP
--A INPUT -p tcp -m tcp --tcp-flags ALL ALL -j DROP
+-A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+-A INPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j DROP
+-A INPUT -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,SYN,RST,PSH,ACK,URG -j DROP
 -A INPUT -i lo -j ACCEPT
 -A INPUT -p icmp -j ACCEPT
+{% for item in allowed_ports_for_specific_addresses %}
+-A INPUT -s {{ item.address }} -p tcp -m tcp --dport {{ item.port }} -j ACCEPT
+{% endfor %}
 {% for port in worldwide_allowed_ports %}
 -A INPUT -p tcp -m tcp --dport {{ port }} -j ACCEPT
 {% endfor %}
