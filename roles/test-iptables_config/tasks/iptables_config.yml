@@ -1,0 +1,24 @@
+---
+- name: Create a temporary filename for iptables-save result
+  shell: echo -n /tmp/iptables-config.pid$$-`date +%Y-%m-%dT%H:%M:%S`
+  register: test_iptables_config_save_result_filename
+  changed_when: False
+  check_mode: no
+  args:
+    warn: no
+
+- name: Save iptables-save result to the temporary file
+  shell: /usr/sbin/iptables-save | sed -e '/^#/d;/^:/s/\[[0-9][0-9]*:[0-9][0-9]*\]$/[0:0]/g' > {{ test_iptables_config_save_result_filename.stdout }}
+  changed_when: False
+  check_mode: no
+  args:
+    warn: no
+
+- name: Compare iptables template to iptables-save result
+  template: src=iptables.conf.j2 dest={{ test_iptables_config_save_result_filename.stdout }}
+
+- name: Remove iptables-save result temporary file
+  file: path={{ test_iptables_config_save_result_filename.stdout }} state=absent
+  changed_when: False
+  check_mode: no
+

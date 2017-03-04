@@ -1,0 +1,5 @@
+---
+- include: iptables_config.yml
+  tags:
+    - iptables
+    - iptables_config
