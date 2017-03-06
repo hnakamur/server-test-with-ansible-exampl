@@ -1,5 +1,11 @@
 ---
 #- template: src=iptables.conf.j2 dest=/etc/sysconfig/iptables
+#  check_mode: no
+#
+#- shell: iptables-restore < /etc/sysconfig/iptables
+#  check_mode: no
+
+- test_iptables: src=iptables.conf.j2
 
 - name: 
   test_command:
