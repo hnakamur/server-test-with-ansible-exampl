@@ -53,8 +53,8 @@ class ActionModule(ActionBase):
         module_args['_raw_params'] = cmd
         del module_args['cmd']
         del module_args['want_stdout']
-        cmd_result = self._execute_module(module_name='command', module_args=module_args, task_vars=task_vars)
-        #cmd_result = self._low_level_execute_command(cmd=cmd)
+        #cmd_result = self._execute_module(module_name='shell', module_args=module_args, task_vars=task_vars)
+        cmd_result = self._low_level_execute_command(cmd=cmd)
         self._display.display("test_command cmd_result=%s" % cmd_result)
         result['cmd'] = cmd
         result['rc'] = cmd_result['rc']
