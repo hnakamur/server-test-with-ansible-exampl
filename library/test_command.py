@@ -143,9 +143,25 @@ def main():
     if module.params['want_rc'] is not None:
         changed = (rc != module.params['want_rc'])
     elif module.params['want_stdout'] is not None:
-        changed = (stdout != module.params['want_stdout'])
+        want_stdout = module.params['want_stdout']
+        changed = (stdout != want_stdout)
+        if changed and b("\n") in stdout:
+            result['diff'] = {
+                'before_header': 'want_stdout',
+                'after_header': 'result.stdout',
+                'before': stdout + b("\n"),
+                'after': want_stdout + b("\n")
+            }
     elif module.params['want_stderr'] is not None:
-        changed = (stderr != module.params['want_stderr'])
+        want_stderr = module.params['want_stderr']
+        changed = (stderr != want_stderr)
+        if changed and b("\n") in stderr:
+            result['diff'] = {
+                'before_header': 'want_stderr',
+                'after_header': 'result.stderr',
+                'before': stderr + b("\n"),
+                'after': want_stderr + b("\n")
+            }
 
     result['changed'] = changed
 
