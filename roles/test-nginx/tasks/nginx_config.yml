@@ -4,7 +4,6 @@
   args:
     cmd: /bin/rpm -qa nginx
     want_stdout: "{{ test_nginx_version }}"
-  check_mode: no
   notify: show_test_failed_message
 
   #- name: Check nginx version
@@ -19,5 +18,3 @@
 #  test_service: name=nginx defined=True state=started enabled=True
 #  notify: show_test_failed_message
 
-- name: Check nginx service state and enabled
-  service: name=nginx state=started enabled=True
