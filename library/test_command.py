@@ -85,6 +85,7 @@ def main():
         argument_spec=dict(
           cmd = dict(type='str', required=True),
           chdir = dict(type='path'),
+          use_shell = dict(type='bool', default=False),
           want_rc = dict(type='int'),
           want_stdout = dict(type='str'),
           want_stderr = dict(type='str'),
@@ -93,9 +94,9 @@ def main():
     )
 
     chdir = module.params['chdir']
-    args = cmd = module.params['cmd']
-
-    if args.strip() == '':
+    use_shell = module.params['use_shell']
+    cmd = module.params['cmd']
+    if cmd.strip() == '':
         module.fail_json(rc=256, msg="no command given")
 
     want_count = 0
@@ -112,10 +113,13 @@ def main():
         chdir = os.path.abspath(chdir)
         os.chdir(chdir)
 
-    args = shlex.split(args)
+    if use_shell:
+        args = cmd
+    else:
+        args = shlex.split(cmd)
     startd = datetime.datetime.now()
 
-    rc, out, err = module.run_command(args, encoding=None)
+    rc, out, err = module.run_command(args, use_unsafe_shell=use_shell, encoding=None)
 
     endd = datetime.datetime.now()
     delta = endd - startd
@@ -136,7 +140,7 @@ def main():
         },
         'start': str(startd),
         'end': str(endd),
-        'delta': str(delta),
+        'delta': str(delta)
     }
 
     changed = False
@@ -149,8 +153,8 @@ def main():
             result['diff'] = {
                 'before_header': 'want_stdout',
                 'after_header': 'result.stdout',
-                'before': stdout + b("\n"),
-                'after': want_stdout + b("\n")
+                'before': want_stdout + b("\n"),
+                'after': stdout + b("\n")
             }
     elif module.params['want_stderr'] is not None:
         want_stderr = module.params['want_stderr']
@@ -159,8 +163,8 @@ def main():
             result['diff'] = {
                 'before_header': 'want_stderr',
                 'after_header': 'result.stderr',
-                'before': stderr + b("\n"),
-                'after': want_stderr + b("\n")
+                'before': want_stderr + b("\n"),
+                'after': stderr + b("\n")
             }
 
     result['changed'] = changed

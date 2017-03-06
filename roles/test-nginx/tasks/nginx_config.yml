@@ -2,9 +2,17 @@
 - name: Check nginx version
   test_command:
   args:
+    cmd: /bin/rpm -qa nginx
+    want_stdout: "{{ test_nginx_version }}"
+  notify: show_test_failed_message
+
+- name: Check nginx version
+  test_command:
+  args:
     #cmd: /bin/rpm -qa nginx
     #want_stdout: "{{ test_nginx_version }}"
-    cmd: yum info nginx2
+    cmd: "WANT=nginx; yum info $WANT"
+    use_shell: True
     want_stdout: "{{ test_nginx_version }}"
   notify: show_test_failed_message
 
