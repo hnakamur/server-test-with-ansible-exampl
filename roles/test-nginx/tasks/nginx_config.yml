@@ -8,7 +8,7 @@
 
 - name: Check nginx version
   test_rpm: "name={{ test_nginx_version }} state=present"
-  notify: show_test_failed_message
+#  notify: show_test_failed_message
 
 #- name: Check dummy_package version
 #  test_rpm: name=dummy state=present
