@@ -1,8 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# (c) 2012, Michael DeHaan <michael.dehaan@gmail.com>, and others
-# (c) 2016, Toshio Kuratomi <tkuratomi@ansible.com>
+# (c) 2017, Hiroaki Nakamura <hnakamur@gmail.com>
 #
 # This file is part of Ansible
 #
@@ -21,9 +20,8 @@
 
 DOCUMENTATION = '''
 ---
-module: command
-short_description: Executes a command on a remote node
-version_added: historical
+module: test_command
+short_description: Executes a command on a remote node and check result code, stdout, or stderr.
 description:
      - The M(command) module takes the command name followed by a list of space-delimited arguments.
      - The given command will be executed on all selected nodes. It will not be
@@ -31,9 +29,9 @@ description:
        like C("<"), C(">"), C("|"), C(";") and C("&") will not work (use the M(shell)
        module if you need these features).
 options:
-  free_form:
+  cmd:
     description:
-      - the command module takes a free form command to run.  There is no parameter actually named 'free form'.
+      - the command module takes a free form command to run.
         See the examples!
     required: true
     default: null
@@ -43,31 +41,42 @@ options:
     version_added: "0.6"
     required: false
     default: null
-notes:
-    -  If you want to run a command through the shell (say you are using C(<),
-       C(>), C(|), etc), you actually want the M(shell) module instead. The
-       M(command) module is much more secure as it's not affected by the user's
-       environment.
-    -  " C(creates), C(removes), and C(chdir) can be specified after the command. For instance, if you only want to run a command if a certain file does not exist, use this."
+  use_shell:
+    default: no
+    description:
+      - Run a command through shell if set to yes/true.
+      - If you want to run a command through the shell (say you are using C(<),
+        C(>), C(|), etc), set this to yes/true.
+    required: false
+  want_rc:
+    default: no
+    description:
+      - The result code of the command execution is compared to this value if specified.
+    required: false
+  want_stdout:
+    default: no
+    description:
+      - The stdout output of the command execution is compared to this value if specified.
+    required: false
+  want_stderr:
+    default: no
+    description:
+      - The stderr output of the command execution is compared to this value if specified.
+    required: false
+note:
+    - Exactly one of C(want_rc), C(want_stdout) or C(want_stderr) must be specified.
+    - This module executes the command even when ansible is in check mode.
+      WARNING: It is users' responsibility to use command line which does NOT modify the environment.
+    - The C(changed) value in result is that the result rc, stdout or stderr did match to
+      want_rc, want_stdout or want_stderr.
+      Note this is different from other standard modules where C(changed) means whether
+      the module changed the environment or not.
 author: 
-    - Ansible Core Team
-    - Michael DeHaan
+    - Hiroaki Nakamura
 '''
 
 EXAMPLES = '''
-# Example from Ansible Playbooks.
-- command: /sbin/shutdown -t now
-
-# Run the command if the specified file does not exist.
-- command: /usr/bin/make_database.sh arg1 arg2 creates=/path/to/database
-
-# You can also use the 'args' form to provide the options. This command
-# will change the working directory to somedir/ and will only run when
-# /path/to/database doesn't exist.
-- command: /usr/bin/make_database.sh arg1 arg2
-  args:
-    chdir: somedir/
-    creates: /path/to/database
+TBD
 '''
 
 import datetime
