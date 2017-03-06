@@ -129,6 +129,7 @@ def main():
     # hence don't copy this one if you are looking to build others!
     module = AnsibleModule(
         argument_spec=dict(
+          cmd = dict(type='str', required=True),
           _raw_params = dict(),
           _uses_shell = dict(type='bool', default=False),
           chdir = dict(type='path'),
@@ -142,7 +143,7 @@ def main():
     shell = module.params['_uses_shell']
     chdir = module.params['chdir']
     executable = module.params['executable']
-    args = module.params['_raw_params']
+    args = module.params['cmd']
     creates = module.params['creates']
     removes = module.params['removes']
     warn = module.params['warn']
