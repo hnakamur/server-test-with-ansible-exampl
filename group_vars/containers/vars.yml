@@ -3,15 +3,15 @@ test_nginx_version_list:
   centos6: nginx-1.11.9-1.el7.ngx.x86_64
   centos7: nginx-1.11.10-1.el7.ngx.x86_64
 #  centos7: nginx-1.11.10-1.el7.ngx.x86_64
-test_nginx_version: "{{ test_nginx_version_list[ansible_hostname] }}"
+test_nginx_version: "{{ test_nginx_version_list[inventory_hostname] }}"
 
 test_nginx_service_started_list:
   centos7: False
-test_nginx_service_state: "{% if test_nginx_service_started_list[ansible_hostname] %}active{% else %}unknown{% endif %}"
+test_nginx_service_state: "{% if test_nginx_service_started_list[inventory_hostname] %}active{% else %}unknown{% endif %}"
 
 test_nginx_service_enabled_list:
   centos7: False
-test_nginx_service_enabled: "{% if test_nginx_service_enabled_list[ansible_hostname] %}enabled{% else %}disabled{% endif %}"
+test_nginx_service_enabled: "{% if test_nginx_service_enabled_list[inventory_hostname] %}enabled{% else %}disabled{% endif %}"
 
 worldwide_allowed_ports:
   - 80

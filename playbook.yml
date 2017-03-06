@@ -1,5 +1,6 @@
 ---
 - hosts: containers
+  gather_facts: no
   roles:
     # NOTE: 最初に-Cをつけて実行したかチェックし、つけていない場合は警告表示して異常終了する。
     - role: warn_check_mode_needed_for_test
