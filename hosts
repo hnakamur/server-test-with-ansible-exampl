@@ -1,7 +1,6 @@
 [containers]
 centos6
 centos7
-cent7
 
 [containers:vars]
 ansible_connection = lxd

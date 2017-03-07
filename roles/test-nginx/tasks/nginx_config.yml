@@ -6,20 +6,23 @@
 #    want_stdout: "{{ test_nginx_version }}"
 #  notify: show_test_failed_message
 
-- name: Check nginx version
-  test_rpm: "name={{ test_nginx_version }} state=present"
-#  notify: show_test_failed_message
+#- name: Check nginx version
+#  test_rpm: "name={{ test_nginx_version }} state=present"
+##  notify: show_test_failed_message
 
-- name: Check nginx process
-  test_ps: name=nginx state=present
-  args:
-    match_full: True
+- name: Check nginx pidfile
+  test_pidfile: name=/var/run/nginx.pid pattern=nginx state=present match_full=True
 
-- name: Check lsyncd process does not exist
-  test_ps: name=lsyncd state=absent
+#- name: Check nginx process
+#  test_ps: name=nginx state=present
+#  args:
+#    match_full: True
 
-- name: Show all processes
-  test_ps: name=*
+#- name: Check lsyncd process does not exist
+#  test_ps: name=lsyncd state=absent
+#
+#- name: Show all processes
+#  test_ps: name=*
 
 #- name: Check dummy_package version
 #  test_rpm: name=dummy state=present
