@@ -147,7 +147,8 @@ def main():
         'defined': {},
         'state': {},
         'enabled': {},
-        'module': 'test_systemd'
+        'module': 'test_systemd',
+        '_ansible_verbose_always': True
     }
 
     changed = False

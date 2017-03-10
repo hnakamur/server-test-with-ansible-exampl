@@ -415,6 +415,7 @@ def main():
 
     result = {
         'name': service.name,
+        '_ansible_verbose_always': True
     }
 
     result['tools'] = service.get_service_tools()
