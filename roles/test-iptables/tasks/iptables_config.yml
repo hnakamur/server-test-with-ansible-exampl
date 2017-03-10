@@ -5,13 +5,15 @@
 #- shell: iptables-restore < /etc/sysconfig/iptables
 #  check_mode: no
 
-- test_iptables: src=iptables.conf.j2
+- name: Check iptables version
+  test_rpm: "name={{ test_iptables_version }} state=present"
+  notify: show_test_failed_message
 
-- name: 
-  test_command:
-  args:
-    cmd: "echo 'Hello, action plugin!!!'"
-    want_stdout: "Hello, action plugin!!!!"
+- name: Check iptables service state and enabled
+  test_service: name=iptables defined=True state=started enabled=True
+  notify: show_test_failed_message
+
+- test_iptables: src=iptables.conf.j2
   notify: show_test_failed_message
 
 #- name: Create a temporary filename for iptables-save result

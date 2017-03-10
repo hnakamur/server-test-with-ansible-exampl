@@ -1,0 +1,4 @@
+---
+- name: Check firewalld service state and enabled
+  test_service: name=iptables defined=False
+  notify: show_test_failed_message

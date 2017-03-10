@@ -1,9 +1,11 @@
 ---
 - hosts: containers
-  gather_facts: no
+  gather_facts: yes
   roles:
     # NOTE: 最初に-Cをつけて実行したかチェックし、つけていない場合は警告表示して異常終了する。
     - role: warn_check_mode_needed_for_test
 
-    - role: test-iptables_config
+    - role: test-no_firewalld
+    - role: test-iptables
     - role: test-nginx
+    - role: test-ps_all

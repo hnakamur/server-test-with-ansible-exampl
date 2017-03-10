@@ -1,0 +1,5 @@
+---
+- include: no_firewalld.yml
+  tags:
+    - no_firewalld
+  when: ansible_distribution == "CentOS" and ansible_distribution_major_version == "7"

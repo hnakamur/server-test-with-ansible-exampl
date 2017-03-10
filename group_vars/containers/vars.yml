@@ -1,9 +1,14 @@
 ---
+test_iptables_version_list:
+  centos6: iptables-1.4.7-16.el6.x86_64
+  centos7: nginx-1.11.9-7.el7.centos.ngx.x86_64
+test_iptables_version: "{{ test_iptables_version_list[inventory_hostname] }}"
+
+
 test_nginx_version_list:
   #centos6: nginx-1.11.9-7.el6.ngx.x86_64
   centos6: nginx-1.11.9-6.el6.ngx.x86_64
   centos7: nginx-1.11.9-8.el7.centos.ngx.x86_64
-  cent7: nginx-1.11.9-8.el7.centos.ngx.x86_64
 test_nginx_version: "{{ test_nginx_version_list[inventory_hostname] }}"
 
 test_nginx_service_started_list:

@@ -1,4 +1,5 @@
 *.retry
 *.pyc
 *.pyo
+server-test.log
 venv2/

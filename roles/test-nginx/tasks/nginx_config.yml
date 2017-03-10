@@ -1,52 +1,23 @@
 ---
-#- name: Check nginx version
-#  test_command:
-#  args:
-#    cmd: /bin/rpm -qa nginx
-#    want_stdout: "{{ test_nginx_version }}"
-#  notify: show_test_failed_message
-
-#- name: Check nginx version
-#  test_rpm: "name={{ test_nginx_version }} state=present"
-##  notify: show_test_failed_message
+- name: Check nginx version
+  test_rpm: "name={{ test_nginx_version }} state=present"
+  notify: show_test_failed_message
 
 - name: Check nginx pidfile
   test_pidfile: name=/var/run/nginx.pid pattern=nginx state=present match_full=True
+  notify: show_test_failed_message
 
-#- name: Check nginx process
-#  test_ps: name=nginx state=present
-#  args:
-#    match_full: True
+- name: Check nginx process
+  test_ps: name=nginx state=present
+  args:
+    match_full: True
+  notify: show_test_failed_message
 
-#- name: Check lsyncd process does not exist
-#  test_ps: name=lsyncd state=absent
-#
-#- name: Show all processes
-#  test_ps: name=*
+- name: Check lsyncd process does not exist
+  test_ps: name=lsyncd state=absent
+  notify: show_test_failed_message
 
-#- name: Check dummy_package version
-#  test_rpm: name=dummy state=present
-#  notify: show_test_failed_message
-#
-#- name: Check nginx version #3
-#  test_command:
-#  args:
-#    #cmd: /bin/rpm -qa nginx
-#    #want_stdout: "{{ test_nginx_version }}"
-#    cmd: "WANT=nginx; yum info $WANT"
-#    use_shell: True
-#    want_stdout: "{{ test_nginx_version }}"
-#  notify: show_test_failed_message
-
-  #- name: Check nginx version
-  #  test_shell:
-  #  args:
-  #    cmd: WANT=yeah; /bin/rpm -qa nginx
-  #    want_stdout: "{{ test_nginx_version }}"
-  #  check_mode: no
-  #  notify: show_test_failed_message
-
-#- name: Check nginx service state and enabled
-#  test_service: name=nginx defined=True state=started enabled=True
-#  notify: show_test_failed_message
+- name: Check nginx service state and enabled
+  test_service: name=nginx defined=True state=started enabled=True
+  notify: show_test_failed_message
 
