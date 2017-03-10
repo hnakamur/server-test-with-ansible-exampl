@@ -27,9 +27,12 @@ description:
 options:
   name:
     description:
-      - the command module takes a free form command to run.
-        See the examples!
+      - the name of the package.
     required: true
+  version:
+    description:
+      - the version of the package.
+    required: false
   state:
     description:
       - the expected installation state.
@@ -51,12 +54,14 @@ def main():
     module = AnsibleModule(
         argument_spec=dict(
           name = dict(type='str', required=True),
+          version = dict(type='str', required=False),
           state=dict(default='present', choices=['absent','present']),
         ),
         supports_check_mode = True
     )
 
     name = module.params['name']
+    version = module.params['version']
     state = module.params['state']
 
     rpmbin = module.get_bin_path('rpm', required=True)
@@ -66,21 +71,44 @@ def main():
     lang_env = dict(LANG='C', LC_ALL='C', LC_MESSAGES='C')
     cmd = '%s -q %s' % (rpmbin, name)
     rc, out, err = module.run_command(cmd, environ_update=lang_env)
-    if rc != 0 and 'is not installed' not in out:
-    	module.fail_json(msg='Error from rpm: %s: %s' % (cmd, err))
+    out = out.rstrip('\n')
 
     got_state = 'present'
-    if 'is not installed' in out:
-    	got_state = 'absent'
+    got_version = None
+    if rc != 0:
+        if 'is not installed' in out:
+            got_state = 'absent'
+        else:
+            module.fail_json(msg='Error from rpm: %s: %s' % (cmd, err))
+    else:
+        if not out.startswith('%s-' % name):
+            module.fail_json(msg='Unexpected rpm output=%s: command=%s: output should be starts with %s-' % (out, cmd, err))
+        got_version = out[len('%s-' % name):]
 
     result = {
+        'module': 'test_rpm',
         'name': name,
-        'state': got_state,
-        'changed': got_state != state,
-        'stdout': out.rstrip('\n'),
+        'state': {
+            'got': got_state,
+            'want': state,
+        },
         '_ansible_verbose_always': True
     }
 
+    if got_version:
+        result['version'] = {
+            'got': got_version
+        }
+
+    changed = (got_state != state)
+    if state == 'present' and version is not None:
+        if 'version' not in result:
+            result['version'] = {}
+        result['version']['want'] = version
+        if got_version != version:
+            changed = True
+
+    result['changed'] = changed
     module.exit_json(**result)
 
 if __name__ == '__main__':

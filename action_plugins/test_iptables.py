@@ -34,7 +34,8 @@ from ansible.module_utils.six import b
 def cook_iptables_save_for_comparision(stdout):
     counter = re.compile(r'\[\d+:\d+\]$')
     lines = []
-    for line in stdout.split('\n'):
+    # NOTE: first replace CR+LF to LF
+    for line in stdout.replace('\r\n', '\n').split('\n'):
         if line.startswith('#'):
             continue
         if line.startswith(':'):
@@ -123,7 +124,7 @@ class ActionModule(ActionBase):
 
             old_vars = self._templar._available_variables
             self._templar.set_available_variables(temp_vars)
-            resultant = self._templar.do_template(template_data, preserve_trailing_newlines=True, escape_backslashes=False)
+            resultant = self._templar.template(template_data, preserve_trailing_newlines=True, escape_backslashes=False)
             self._templar.set_available_variables(old_vars)
         except Exception as e:
             result['failed'] = True

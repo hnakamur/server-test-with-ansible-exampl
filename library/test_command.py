@@ -64,7 +64,7 @@ options:
       - The stderr output of the command execution is compared to this value if specified.
     required: false
 note:
-    - Exactly one of C(want_rc), C(want_stdout) or C(want_stderr) must be specified.
+    - At most one of C(want_rc), C(want_stdout) or C(want_stderr) must be specified.
     - This module executes the command even when ansible is in check mode.
       WARNING: It is users' responsibility to use command line which does NOT modify the environment.
     - The C(changed) value in result is that the result rc, stdout or stderr did match to
@@ -115,7 +115,7 @@ def main():
         want_count += 1
     if module.params['want_stderr'] is not None:
         want_count += 1
-    if want_count != 1:
+    if want_count > 1:
         module.fail_json(rc=256, msg="one of want_rc, want_stdout and want_stderr must be given (not zero or two or more)")
 
     if chdir:
@@ -142,14 +142,14 @@ def main():
     stderr = err.rstrip(b("\r\n"))
 
     result = {
-        'result': {
-            'stdout': stdout,
-            'stderr': stderr,
-            'rc': rc,
-        },
+        # NOTE: 'rc'というキーで0以外の値を付けるとfailed扱いになるためキー名を変えています。
+        'result_rc': rc,
+        'stdout': stdout,
+        'stderr': stderr,
         'start': str(startd),
         'end': str(endd),
-        'delta': str(delta)
+        'delta': str(delta),
+        '_ansible_verbose_always': True
     }
 
     changed = False
